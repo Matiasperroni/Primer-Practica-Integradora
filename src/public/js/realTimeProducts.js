@@ -7,7 +7,7 @@ socket.on("sendProducts", (products) => {
     products.forEach(product => {
         const pCreated = document.createElement("p")
         pCreated.textContent = `
-        Id: ${product.id}
+        Id: ${product._id}
         Title: ${product.title}
         Description: ${product.description}
         Category: ${product.category}

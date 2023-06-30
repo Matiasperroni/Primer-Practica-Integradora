@@ -8,8 +8,8 @@ const cartManager = new CartManagerDB();
 router.post("/", async (req, res) => {
     try {
         const products = req.body;
-        await cartManager.addNewCart(products);
-        res.send("New cart added!");
+        const cartAdded =  await cartManager.createNewCart(products);
+        res.send(cartAdded);
     } catch (error) {
         console.error(error);
         res.status(500).send("Error al obtener los datos");
@@ -18,9 +18,9 @@ router.post("/", async (req, res) => {
 
 router.get("/:cid", async (req, res) => {
     try {
-        const cartID = parseInt(req.params.cid);
-        const cart = await cartManager.getCartById(cartID);
-        res.send(cart);
+        const cartID = req.params.cid;
+        const cart = await cartManager.getCartByID(cartID);
+        res.send(cart.products);
     } catch (error) {
         console.error(error);
         res.status(500).send("Error al obtener los datos");
@@ -29,10 +29,10 @@ router.get("/:cid", async (req, res) => {
 
 router.post("/:cid/product/:pid", async (req, res) => {
     try {
-        const cartID = parseInt(req.params.cid);
-        const prodID = parseInt(req.params.pid);
-        await cartManager.addToCart(cartID, prodID);
-        res.send("Product has been added to cart");
+        const cartID = req.params.cid;
+        const prodID = req.params.pid;
+        const productAddedToCart = await cartManager.addToCart(cartID, prodID);
+        res.send(productAddedToCart);
     } catch (error) {
         console.error(error);
         res.status(500).send("Error, unable to obtain data");

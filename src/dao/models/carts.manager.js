@@ -4,7 +4,7 @@ class CartManagerDB {
     constructor() {
         this.cartsModel = cartModel;
     }
-    async addNewCart() {
+    async createNewCart() {
         try {
             const newCart = await this.cartsModel.create({ products: [] });
             return newCart;
@@ -16,9 +16,9 @@ class CartManagerDB {
 
     async getCartByID(id) {
         try {
-            const findCart = await this.cartsModel.findById(id);
-            if (findCart) {
-                return findCart;
+            const cartFound = await this.cartsModel.findById(id);
+            if (cartFound) {
+                return cartFound;
             } else {
                 return "Not Found";
             }

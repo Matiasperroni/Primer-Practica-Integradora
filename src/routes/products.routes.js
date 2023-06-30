@@ -1,70 +1,49 @@
 import { Router } from "express";
-import ProductManager from "../ProductsManager.js";
+// import ProductManager from "../dao/managers/ProductsManager.js";
+import productsManagerDB from "../dao/models/products.manager.js";
 
 const router = Router();
 
-const productManager = new ProductManager();
+const productManager = new productsManagerDB();
 let products = [];
 
 router.get("/", async (req, res) => {
-    let limit = parseInt(req.query.limit);
     let products = await productManager.getProducts();
-    if (limit > 0) {
-        let newProd = products.slice(0, limit);
-        res.send(newProd);
-    } else {
-        res.send(products);
-    }
+    res.send(products);
 });
 
 router.get("/:pid", async (req, res) => {
-    let products = await productManager.getProducts();
-    let productId = req.params.pid;
-    let usuario = products.find((u) => u.id === parseInt(productId));
-    if (!usuario) return res.send("Usuario no encontrado");
-    res.send(usuario);
+    try {
+        const pID = req.params.pid;
+        console.log("soy el id", pID);
+        const pFound = await productManager.getProductById(pID);
+        res.send(pFound);
+    } catch (error) {
+        res.status(500).send("Error");
+    }
 });
 
 router.post("/", (req, res) => {
-    const {
-        title,
-        description,
-        price,
-        thumbnail,
-        code,
-        stock,
-        category,
-        status,
-    } = req.body;
-    productManager.addProduct(
-        title,
-        description,
-        price,
-        thumbnail,
-        code,
-        stock,
-        category,
-        status
-    );
+    const product = req.body;
+    productManager.addProduct(product);
     res.send({ status: "success" });
 });
 
-router.put("/:pid", (req, res) => {
-    const prodID = parseInt(req.params.pid);
-    const prodToUpdate= req.body;
-    const fieldToUpdate = Object.keys(prodToUpdate)
-    const valueForUpdate = Object.values(prodToUpdate).toString()
-    productManager.updateProduct(prodID, fieldToUpdate, valueForUpdate)
-})
+router.put("/:pid", async (req, res) => {
+    const prodID = req.params.pid;
+    const prodToAdd= req.body;
+    const prodToUpdate = await productManager.updateProduct(prodID, prodToAdd)
+    res.send(prodToUpdate)
+});
 
-router.delete("/:pid",  (req, res) => {
+router.delete("/:pid", async (req, res) => {
     try {
-        const prodID = parseInt(req.params.pid);
-        productManager.deleteProduct(prodID);
-        res.send("Eliminado");
+        const prodID = req.params.pid;
+        const productToDelete = await productManager.deleteProduct(prodID);
+        res.send(productToDelete);
     } catch (error) {
         console.error(error);
-        res.status(500).send("Error al obtener los datos");
+        res.status(500).send("Error getting data.");
     }
 });
 

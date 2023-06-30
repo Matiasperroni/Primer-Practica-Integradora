@@ -34,11 +34,11 @@ class CartManagerDB {
                 throw new Error("Cart not found");
             }
 
-            const existingProductIndex = cart.products.findIndex(
+            const prodIndex = cart.products.findIndex(
                 (prod) => prod.product === prodID
             );
-            if (existingProductIndex !== -1) {
-                cart.products[existingProductIndex].quantity++;
+            if (prodIndex !== -1) {
+                cart.products[prodIndex].quantity++;
             } else {
                 const newProduct = { product: prodID, quantity: 1 };
                 cart.products.push(newProduct);

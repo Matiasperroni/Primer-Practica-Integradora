@@ -7,6 +7,7 @@ import __dirname from "./utils.js";
 import handlebars from "express-handlebars";
 // import ProductManager from "./dao/managers/ProductsManager.js";
 import productsManagerDB from './dao/models/products.manager.js';
+import messagesManagerDB from './dao/models/messages.manager.js';
 import mongoose from "mongoose";
 // const passwordDB = "fcKP3TXvcILtCNWu"
 const MONGO_URL = `mongodb+srv://Matias-Perroni:fcKP3TXvcILtCNWu@cluster0.ymwavy3.mongodb.net/ecommerce?retryWrites=true&w=majority`;
@@ -36,6 +37,8 @@ const serverHttp = app.listen(8080, () => {
 });
 
 const productManager = new productsManagerDB();
+const messageManager = new messagesManagerDB();
+
 app.get("/realtimeproducts", async (req, res) => {
     res.render("realTimeProducts");
 });
@@ -56,4 +59,13 @@ io.on("connection", async (socket) => {
     console.log("Nuevo cliente conectado");
     const products = await sendProductList();
     socket.emit("sendProducts", products);
+
+    socket.on("message", async (data) => {
+        let user = data.user;
+        let message = data.message;
+        await messageManager.addMessage(user, message)
+        const messages = await messageManager.getMessages();
+        io.emit("messageLogs", messages)
+    })
 });
+

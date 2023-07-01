@@ -6,7 +6,7 @@ class productsManagerDB {
     }
     async getProducts() {
         try {
-            const products = await this.productsModel.find();
+            const products = await this.productsModel.find().lean();
             return products;
         } catch (err) {
             throw new Error("Can´t get any product.");
@@ -36,7 +36,7 @@ class productsManagerDB {
             );
             return updatedProduct;
         } catch (error) {
-            console.log("no se pudo updatear");
+            console.log("Cannot update");
             // throw new Error("Could not update product")
         }
     }

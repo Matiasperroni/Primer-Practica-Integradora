@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { Router, json } from 'express';
 // import ProductManager from '../dao/managers/ProductsManager.js';
 import productsManagerDB from '../dao/models/products.manager.js';
 import messagesManagerDB from '../dao/models/messages.manager.js';
@@ -10,7 +10,7 @@ const router = Router();
 router.get("/", async (req, res) => {
     console.log("estas en /");
     const products = await productManager.getProducts()
-    console.log(products);
+    console.log("a ver", products);
     res.render("home", {products})
 })
 
@@ -24,7 +24,7 @@ router.post("/chat/:user/:message", async(req, res) => {
 router.get("/chat", async (req, res) => {
     console.log("estas en el chat");
     const chat = await messageManager.getMessages()
-    res.send(chat)
+    // res.send(chat)
     res.render("chat", {chat})
 })
 

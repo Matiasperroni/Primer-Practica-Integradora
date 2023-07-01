@@ -17,8 +17,7 @@ class messagesManagerDB {
     }
     async getMessages() {
         try {
-            const messages = await this.messagesModel.find();
-            console.log("soy messages", messages);
+            const messages = await this.messagesModel.find().lean();
             return messages;
         } catch (error) {
             throw new Error("Couldn´t get messages");

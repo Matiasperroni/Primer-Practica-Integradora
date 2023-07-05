@@ -5,12 +5,15 @@ import viewsRouter from "./routes/views.routes.js";
 import { Server } from "socket.io";
 import __dirname from "./utils.js";
 import handlebars from "express-handlebars";
-// import ProductManager from "./dao/managers/ProductsManager.js";
 import productsManagerDB from './dao/models/products.manager.js';
 import messagesManagerDB from './dao/models/messages.manager.js';
 import mongoose from "mongoose";
+import dotenv from "dotenv";
 // const passwordDB = "fcKP3TXvcILtCNWu"
-const MONGO_URL = `mongodb+srv://Matias-Perroni:fcKP3TXvcILtCNWu@cluster0.ymwavy3.mongodb.net/ecommerce?retryWrites=true&w=majority`;
+// const MONGO_URL = `mongodb+srv://Matias-Perroni:fcKP3TXvcILtCNWu@cluster0.ymwavy3.mongodb.net/ecommerce?retryWrites=true&w=majority`;
+dotenv.config();
+const MONGO_URL = process.env.MONGO_URL;
+console.log("soy la url de mongo", MONGO_URL);
 
 //instance of server
 const app = express();
@@ -18,10 +21,12 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const connection = mongoose
+// MongoDB connection
+mongoose
     .connect(MONGO_URL)
-    .then((conn) => console.log("Conected with MongoDB in URL " + MONGO_URL))
-    .catch((err) => console.log(err));
+    .then(() => console.log("Conected with MongoDB in URL " + MONGO_URL))
+    .catch((err) => console.error(err));
+
 
 //static files
 app.use(express.static(__dirname + "/public"));
